@@ -16,26 +16,48 @@ export const useAuth = () => {
 };
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [role, setRole] = useState<'staff' | 'admin'>('staff');
 
+  // ✅ Load from localStorage (persist after refresh)
+  const [isLoggedIn, setIsLoggedIn] = useState(() => {
+    return localStorage.getItem('isLoggedIn') === 'true';
+  });
+
+  const [role, setRole] = useState<'staff' | 'admin'>(() => {
+    return (localStorage.getItem('role') as 'staff' | 'admin') || 'staff';
+  });
+
+  // 🔐 Login function
   const login = (username: string, password: string) => {
     if (username === 'Admin' && password === 'IamADmiN123@') {
       setIsLoggedIn(true);
       setRole('admin');
+
+      localStorage.setItem('isLoggedIn', 'true');
+      localStorage.setItem('role', 'admin');
+
       return true;
     }
+
     if (username === 'staff' && password === 'staff123') {
       setIsLoggedIn(true);
       setRole('staff');
+
+      localStorage.setItem('isLoggedIn', 'true');
+      localStorage.setItem('role', 'staff');
+
       return true;
     }
+
     return false;
   };
 
+  // 🚪 Logout function
   const logout = () => {
     setIsLoggedIn(false);
     setRole('staff');
+
+    localStorage.removeItem('isLoggedIn');
+    localStorage.removeItem('role');
   };
 
   return (
