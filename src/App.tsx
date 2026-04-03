@@ -12,6 +12,8 @@ import GuestEntryNew from "@/pages/GuestEntryNew";
 import CheckoutPageNew from "@/pages/CheckoutPageNew";
 import RecordsNew from "@/pages/RecordsNew";
 import ReportsNew from "@/pages/ReportsNew";
+import UserDashboard from "@/pages/UserDashboard";
+import UserBooking from "@/pages/UserBooking";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -20,6 +22,19 @@ const ProtectedRoutes = () => {
   const { isLoggedIn, role } = useAuth();
   if (!isLoggedIn) return <LoginPage />;
 
+  // User routes - limited access
+  if (role === 'user') {
+    return (
+      <Routes>
+        <Route path="/" element={<UserDashboard />} />
+        <Route path="/user-dashboard" element={<UserDashboard />} />
+        <Route path="/user-booking" element={<UserBooking />} />
+        <Route path="*" element={<Navigate to="/user-dashboard" replace />} />
+      </Routes>
+    );
+  }
+
+  // Admin/Staff routes - full access
   return (
     <HotelProvider>
       <AppLayout>

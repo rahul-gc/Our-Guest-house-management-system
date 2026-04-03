@@ -75,12 +75,19 @@ const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       </aside>
 
       {/* Main content */}
-      <main className="flex-1 overflow-auto">
-        <div className="dhaka-pattern min-h-full">
+      <main className="flex-1 overflow-auto flex flex-col">
+        <div className="dhaka-pattern min-h-full flex-1">
           <div className="p-8">
             {children}
           </div>
         </div>
+        
+        {/* Footer with watermark */}
+        <footer className="bg-secondary/50 border-t border-sidebar-border py-4 px-8">
+          <div className="text-center text-xs">
+            <span className="text-foreground/80 font-medium">Created by Rahul GC © 2026</span>
+          </div>
+        </footer>
       </main>
     </div>
   );

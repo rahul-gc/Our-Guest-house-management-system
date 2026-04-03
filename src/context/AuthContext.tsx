@@ -4,7 +4,7 @@ import type { User } from '@supabase/supabase-js';
 
 interface AuthContextType {
   isLoggedIn: boolean;
-  role: 'staff' | 'admin';
+  role: 'user' | 'staff' | 'admin';
   user: User | null;
   login: (email: string, password: string) => Promise<boolean>;
   logout: () => Promise<void>;
@@ -23,14 +23,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
-  const [role, setRole] = useState<'staff' | 'admin'>('staff');
+  const [role, setRole] = useState<'user' | 'staff' | 'admin'>('user');
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
       setIsLoggedIn(!!session);
       if (session?.user) {
-        const userRole = session.user.user_metadata?.role || 'staff';
+        const userRole = session.user.user_metadata?.role || 
+                        session.user.user_metadata?.data?.role || 
+                        'user';
         setRole(userRole);
       }
       setLoading(false);
@@ -40,7 +42,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setUser(session?.user ?? null);
       setIsLoggedIn(!!session);
       if (session?.user) {
-        const userRole = session.user.user_metadata?.role || 'staff';
+        const userRole = session.user.user_metadata?.role || 
+                        session.user.user_metadata?.data?.role || 
+                        'user';
         setRole(userRole);
       }
     });
@@ -63,7 +67,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (data.user) {
         setUser(data.user);
         setIsLoggedIn(true);
-        const userRole = data.user.user_metadata?.role || 'staff';
+        const userRole = data.user.user_metadata?.role || 
+                        data.user.user_metadata?.data?.role || 
+                        'staff';
         setRole(userRole);
         return true;
       }
@@ -80,7 +86,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       await supabase.auth.signOut();
       setUser(null);
       setIsLoggedIn(false);
-      setRole('staff');
+      setRole('user');
     } catch (error) {
       console.error('Logout error:', error);
     }
