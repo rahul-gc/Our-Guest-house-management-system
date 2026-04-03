@@ -56,9 +56,6 @@ const LoginPage: React.FC = () => {
               Login
             </Button>
           </form>
-          <p className="text-xs text-muted-foreground text-center mt-6">
-            Admin: admin / admin123 • Staff: staff / staff123
-          </p>
         </CardContent>
       </Card>
     </div>
