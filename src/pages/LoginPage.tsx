@@ -8,14 +8,22 @@ import { toast } from 'sonner';
 
 const LoginPage: React.FC = () => {
   const { login } = useAuth();
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const success = login(username, password);
-    if (!success) {
-      toast.error('Invalid credentials. Please try again.');
+    setLoading(true);
+    try {
+      const success = await login(email, password);
+      if (!success) {
+        toast.error('Invalid credentials. Please try again.');
+      }
+    } catch (error) {
+      toast.error('Login failed. Please try again.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -34,12 +42,14 @@ const LoginPage: React.FC = () => {
         <CardContent className="px-8 pb-8">
           <form onSubmit={handleSubmit} className="space-y-4 mt-4">
             <div>
-              <label className="text-sm font-medium text-foreground mb-1.5 block">Username</label>
+              <label className="text-sm font-medium text-foreground mb-1.5 block">Email</label>
               <Input
-                value={username}
-                onChange={e => setUsername(e.target.value)}
-                placeholder="Enter username"
+                type="email"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                placeholder="Enter email address"
                 required
+                disabled={loading}
               />
             </div>
             <div>
@@ -50,10 +60,11 @@ const LoginPage: React.FC = () => {
                 onChange={e => setPassword(e.target.value)}
                 placeholder="Enter password"
                 required
+                disabled={loading}
               />
             </div>
-            <Button type="submit" className="w-full mt-2" size="lg">
-              Login
+            <Button type="submit" className="w-full mt-2" size="lg" disabled={loading}>
+              {loading ? 'Logging in...' : 'Login'}
             </Button>
           </form>
         </CardContent>

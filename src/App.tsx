@@ -6,12 +6,12 @@ import { AuthProvider, useAuth } from "@/context/AuthContext";
 import { HotelProvider } from "@/context/HotelContext";
 import AppLayout from "@/components/AppLayout";
 import LoginPage from "@/pages/LoginPage";
-import Dashboard from "@/pages/Dashboard";
+import DashboardNew from "@/pages/DashboardNew";
 import RoomStatus from "@/pages/RoomStatus";
-import GuestEntry from "@/pages/GuestEntry";
-import CheckoutPage from "@/pages/CheckoutPage";
-import Records from "@/pages/Records";
-import Reports from "@/pages/Reports";
+import GuestEntryNew from "@/pages/GuestEntryNew";
+import CheckoutPageNew from "@/pages/CheckoutPageNew";
+import RecordsNew from "@/pages/RecordsNew";
+import ReportsNew from "@/pages/ReportsNew";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -24,12 +24,12 @@ const ProtectedRoutes = () => {
     <HotelProvider>
       <AppLayout>
         <Routes>
-          <Route path="/" element={<Dashboard />} />
+          <Route path="/" element={<DashboardNew />} />
           <Route path="/rooms" element={<RoomStatus />} />
-          <Route path="/guest-entry" element={<GuestEntry />} />
-          <Route path="/checkout" element={<CheckoutPage />} />
-          <Route path="/records" element={<Records />} />
-          {role === 'admin' && <Route path="/reports" element={<Reports />} />}
+          <Route path="/guest-entry" element={<GuestEntryNew />} />
+          <Route path="/checkout" element={<CheckoutPageNew />} />
+          <Route path="/records" element={<RecordsNew />} />
+          {role === 'admin' && <Route path="/reports" element={<ReportsNew />} />}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </AppLayout>

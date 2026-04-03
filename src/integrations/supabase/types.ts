@@ -14,13 +14,144 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      guests: {
+        Row: {
+          id: string
+          guest_id: string
+          full_name: string
+          phone: string | null
+          email: string | null
+          address: string | null
+          city: string | null
+          country: string | null
+          id_type: string | null
+          id_number: string | null
+          room_number: number
+          num_guests: number
+          purpose: string | null
+          notes: string | null
+          checkin_date: string
+          expected_checkout: string
+          status: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          guest_id: string
+          full_name: string
+          phone?: string | null
+          email?: string | null
+          address?: string | null
+          city?: string | null
+          country?: string | null
+          id_type?: string | null
+          id_number?: string | null
+          room_number: number
+          num_guests?: number
+          purpose?: string | null
+          notes?: string | null
+          checkin_date: string
+          expected_checkout: string
+          status?: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          guest_id?: string
+          full_name?: string
+          phone?: string | null
+          email?: string | null
+          address?: string | null
+          city?: string | null
+          country?: string | null
+          id_type?: string | null
+          id_number?: string | null
+          room_number?: number
+          num_guests?: number
+          purpose?: string | null
+          notes?: string | null
+          checkin_date?: string
+          expected_checkout?: string
+          status?: string
+          created_at?: string
+        }
+      }
+      checkouts: {
+        Row: {
+          id: string
+          guest_id: string
+          guest_uuid: string | null
+          actual_checkout: string
+          nights_stayed: number
+          room_charge: number
+          extra_charges: number
+          total_amount: number
+          payment_method: string
+          payment_status: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          guest_id: string
+          guest_uuid?: string | null
+          actual_checkout: string
+          nights_stayed: number
+          room_charge: number
+          extra_charges?: number
+          total_amount: number
+          payment_method: string
+          payment_status?: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          guest_id?: string
+          guest_uuid?: string | null
+          actual_checkout?: string
+          nights_stayed?: number
+          room_charge?: number
+          extra_charges?: number
+          total_amount?: number
+          payment_method?: string
+          payment_status?: string
+          created_at?: string
+        }
+      }
+      rooms: {
+        Row: {
+          id: string
+          room_number: number
+          room_type: string
+          price_per_night: number
+          status: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          room_number: number
+          room_type: string
+          price_per_night: number
+          status?: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          room_number?: number
+          room_type?: string
+          price_per_night?: number
+          status?: string
+          created_at?: string
+        }
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      generate_guest_id: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
     }
     Enums: {
       [_ in never]: never
