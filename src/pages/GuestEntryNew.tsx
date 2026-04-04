@@ -29,7 +29,6 @@ const GuestEntryNew: React.FC = () => {
   const [purpose, setPurpose] = useState('');
   const [notes, setNotes] = useState('');
   const [checkIn, setCheckIn] = useState(new Date().toISOString().slice(0, 16));
-  const [expectedCheckout, setExpectedCheckout] = useState('');
 
   useEffect(() => {
     loadAvailableRooms();
@@ -48,8 +47,8 @@ const GuestEntryNew: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!fullName.trim() || !roomNumber || !expectedCheckout) {
-      toast.error('Please fill in all required fields');
+    if (!fullName.trim() || !roomNumber) {
+      toast.error('Please fill in all required fields (Name and Room Number)');
       return;
     }
 
@@ -69,7 +68,6 @@ const GuestEntryNew: React.FC = () => {
         purpose: purpose || null,
         notes: notes || null,
         checkin_date: new Date(checkIn).toISOString(),
-        expected_checkout: new Date(expectedCheckout).toISOString(),
         status: 'checked-in',
       });
 
@@ -122,7 +120,7 @@ const GuestEntryNew: React.FC = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="text-sm font-medium text-foreground mb-1.5 block">Email Address</label>
+                <label className="text-sm font-medium text-foreground mb-1.5 block">Email Address (Optional)</label>
                 <Input
                   type="email"
                   value={email}
@@ -233,23 +231,13 @@ const GuestEntryNew: React.FC = () => {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
               <div>
                 <label className="text-sm font-medium text-foreground mb-1.5 block">Check-in Date & Time *</label>
                 <Input
                   type="datetime-local"
                   value={checkIn}
                   onChange={e => setCheckIn(e.target.value)}
-                  required
-                  disabled={loading}
-                />
-              </div>
-              <div>
-                <label className="text-sm font-medium text-foreground mb-1.5 block">Expected Checkout *</label>
-                <Input
-                  type="datetime-local"
-                  value={expectedCheckout}
-                  onChange={e => setExpectedCheckout(e.target.value)}
                   required
                   disabled={loading}
                 />
