@@ -7,7 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import type { Room } from '@/services/roomService';
-import { Bed, Calendar, Users, Home, LogOut, MapPin } from 'lucide-react';
+import { Bed, Calendar, Users, Home, LogOut, MapPin, Sparkles, ArrowRight, Phone } from 'lucide-react';
 
 const UserDashboard: React.FC = () => {
   const [availableRooms, setAvailableRooms] = useState<Room[]>([]);
@@ -48,31 +48,41 @@ const UserDashboard: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50/30 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading your dashboard...</p>
+          <Sparkles className="h-8 w-8 text-amber-500 mx-auto mb-4 animate-spin" />
+          <p className="text-slate-600 font-medium">Loading your dashboard...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50/30">
+      {/* Luxury Header */}
+      <header className="border-b border-slate-200 bg-white/80 backdrop-blur-md sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-3">
-              <Home className="h-6 w-6 text-primary" />
-              <h1 className="text-xl font-bold">Chitwan Stay Manager</h1>
-              <Badge variant="secondary">Guest Portal</Badge>
+              <div className="h-9 w-9 bg-gradient-to-br from-amber-400 to-amber-600 rounded-lg flex items-center justify-center shadow-lg">
+                <Home className="h-5 w-5 text-white" />
+              </div>
+              <div>
+                <h1 className="text-xl font-bold font-serif text-slate-800">New Chitwan</h1>
+                <p className="text-[10px] text-amber-600 uppercase tracking-wider -mt-1">Luxury Guest House</p>
+              </div>
+              <Badge variant="outline" className="ml-2 border-amber-500/50 text-amber-700 bg-amber-50">Guest Portal</Badge>
             </div>
             <div className="flex items-center gap-4">
-              <span className="text-sm text-muted-foreground">
-                Welcome, {user?.email}
+              <span className="text-sm text-slate-600 hidden sm:block">
+                Welcome, <span className="font-medium text-slate-800">{user?.email?.split('@')[0]}</span>
               </span>
-              <Button variant="outline" size="sm" onClick={handleLogout}>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={handleLogout}
+                className="border-slate-200 hover:border-red-300 hover:bg-red-50 hover:text-red-600"
+              >
                 <LogOut className="h-4 w-4 mr-2" />
                 Logout
               </Button>
@@ -83,110 +93,119 @@ const UserDashboard: React.FC = () => {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Welcome Section */}
-        <div className="mb-8">
-          <h2 className="text-3xl font-bold text-foreground">Welcome to Your Guest Portal</h2>
-          <p className="text-muted-foreground mt-2">
-            View available rooms and manage your bookings
+        <div className="mb-8 fade-up">
+          <h2 className="text-4xl font-bold text-slate-800 font-serif">Welcome to Your Guest Portal</h2>
+          <p className="text-slate-500 mt-2 text-lg">
+            View available rooms and manage your bookings at our luxury guest house
           </p>
         </div>
 
-        {/* Stats Cards */}
+        {/* Luxury Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <Card>
+          <Card className="shadow-luxury border-0 border-t-4 border-t-emerald-500 fade-up">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground">Available Rooms</p>
-                  <p className="text-2xl font-bold">{availableRooms.length}</p>
+                  <p className="text-sm font-medium text-slate-500 uppercase tracking-wide">Available Rooms</p>
+                  <p className="text-3xl font-bold font-serif text-slate-800 mt-1">{availableRooms.length}</p>
                 </div>
-                <Bed className="h-8 w-8 text-primary" />
+                <div className="p-3 bg-emerald-100 rounded-xl">
+                  <Bed className="h-6 w-6 text-emerald-600" />
+                </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="shadow-luxury border-0 border-t-4 border-t-amber-500 fade-up fade-up-delay-1">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground">Active Bookings</p>
-                  <p className="text-2xl font-bold">{userBookings.length}</p>
+                  <p className="text-sm font-medium text-slate-500 uppercase tracking-wide">Active Bookings</p>
+                  <p className="text-3xl font-bold font-serif text-slate-800 mt-1">{userBookings.length}</p>
                 </div>
-                <Calendar className="h-8 w-8 text-green-600" />
+                <div className="p-3 bg-amber-100 rounded-xl">
+                  <Calendar className="h-6 w-6 text-amber-600" />
+                </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="shadow-luxury border-0 border-t-4 border-t-blue-500 fade-up fade-up-delay-2">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground">Total Guests</p>
-                  <p className="text-2xl font-bold">
+                  <p className="text-sm font-medium text-slate-500 uppercase tracking-wide">Total Guests</p>
+                  <p className="text-3xl font-bold font-serif text-slate-800 mt-1">
                     {userBookings.reduce((sum, booking) => sum + (booking.num_guests || 1), 0)}
                   </p>
                 </div>
-                <Users className="h-8 w-8 text-blue-600" />
+                <div className="p-3 bg-blue-100 rounded-xl">
+                  <Users className="h-6 w-6 text-blue-600" />
+                </div>
               </div>
             </CardContent>
           </Card>
         </div>
 
         {/* Quick Actions */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 fade-up fade-up-delay-3">
           {/* Book New Room */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <MapPin className="h-5 w-5" />
+          <Card className="shadow-luxury border-0 overflow-hidden">
+            <div className="h-2 bg-gradient-to-r from-emerald-400 to-emerald-600" />
+            <CardHeader className="pb-4">
+              <CardTitle className="flex items-center gap-2 text-xl font-serif text-slate-800">
+                <MapPin className="h-5 w-5 text-emerald-600" />
                 Book a Room
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-muted-foreground mb-4">
+              <p className="text-slate-500 mb-4">
                 {availableRooms.length > 0 
-                  ? `${availableRooms.length} rooms available for booking`
+                  ? `${availableRooms.length} rooms available for booking at our luxury guest house`
                   : 'No rooms available at the moment'
                 }
               </p>
               <Button 
                 onClick={() => navigate('/user-booking')} 
-                className="w-full"
+                className="w-full btn-gold"
                 disabled={availableRooms.length === 0}
               >
                 {availableRooms.length > 0 ? 'Browse Available Rooms' : 'No Rooms Available'}
+                <ArrowRight className="h-4 w-4 ml-2" />
               </Button>
             </CardContent>
           </Card>
 
           {/* My Bookings */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Calendar className="h-5 w-5" />
+          <Card className="shadow-luxury border-0 overflow-hidden">
+            <div className="h-2 bg-gradient-to-r from-amber-400 to-amber-600" />
+            <CardHeader className="pb-4">
+              <CardTitle className="flex items-center gap-2 text-xl font-serif text-slate-800">
+                <Calendar className="h-5 w-5 text-amber-600" />
                 My Active Bookings
               </CardTitle>
             </CardHeader>
             <CardContent>
               {userBookings.length === 0 ? (
-                <div className="text-center py-4">
-                  <p className="text-muted-foreground">No active bookings</p>
+                <div className="text-center py-8 bg-slate-50 rounded-lg">
+                  <p className="text-slate-400">No active bookings</p>
                 </div>
               ) : (
                 <div className="space-y-3">
                   {userBookings.map((booking) => (
-                    <div key={booking.id} className="border rounded-lg p-3">
+                    <div key={booking.id} className="border border-slate-200 rounded-lg p-4 bg-slate-50/50 hover:shadow-md transition-shadow">
                       <div className="flex items-center justify-between mb-2">
-                        <span className="font-medium">Room {booking.room_number}</span>
-                        <Badge variant="default">Active</Badge>
+                        <span className="font-bold font-serif text-slate-800">Room {booking.room_number}</span>
+                        <Badge className="pill-available">Active</Badge>
                       </div>
-                      <p className="text-sm text-muted-foreground">
-                        Guest ID: {booking.guest_id}
+                      <p className="text-sm text-slate-500">
+                        Guest ID: <span className="font-mono text-slate-700">{booking.guest_id}</span>
                       </p>
-                      <p className="text-sm text-muted-foreground">
-                        Check-in: {new Date(booking.checkin_date).toLocaleDateString()}
+                      <p className="text-sm text-slate-500">
+                        Check-in: <span className="text-slate-700">{new Date(booking.checkin_date).toLocaleDateString()}</span>
                       </p>
-                      <p className="text-sm text-muted-foreground">
-                        Guests: {booking.num_guests || 1}
+                      <p className="text-sm text-slate-500">
+                        Guests: <span className="text-slate-700">{booking.num_guests || 1}</span>
                       </p>
                     </div>
                   ))}
@@ -198,24 +217,33 @@ const UserDashboard: React.FC = () => {
 
         {/* Available Rooms Preview */}
         {availableRooms.length > 0 && (
-          <Card className="mt-8">
-            <CardHeader>
-              <CardTitle>Available Rooms Preview</CardTitle>
+          <Card className="mt-8 shadow-luxury border-0 fade-up fade-up-delay-4">
+            <CardHeader className="border-b border-slate-100">
+              <CardTitle className="text-xl font-serif text-slate-800">Available Rooms Preview</CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                {availableRooms.slice(0, 8).map(room => (
-                  <div key={room.room_number} className="border rounded-lg p-3 text-center">
-                    <div className="text-lg font-bold mb-1">Room {room.room_number}</div>
-                    <div className="text-sm text-muted-foreground mb-2">{room.room_type}</div>
-                    <div className="text-primary font-semibold">Rs. {room.price_per_night}</div>
+            <CardContent className="p-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                {availableRooms.slice(0, 8).map((room, index) => (
+                  <div 
+                    key={room.room_number} 
+                    className="border border-slate-200 rounded-xl p-4 text-center bg-slate-50/50 hover:shadow-md hover:border-emerald-300 transition-all cursor-pointer group"
+                    style={{ animationDelay: `${index * 0.05}s` }}
+                  >
+                    <div className="text-2xl font-bold font-serif text-slate-800 mb-1 group-hover:text-emerald-700">Room {room.room_number}</div>
+                    <div className="text-sm text-slate-500 mb-2">{room.room_type}</div>
+                    <div className="text-emerald-600 font-bold font-serif">Rs. {room.price_per_night}</div>
                   </div>
                 ))}
               </div>
               {availableRooms.length > 8 && (
-                <div className="mt-4 text-center">
-                  <Button variant="outline" onClick={() => navigate('/user-booking')}>
+                <div className="mt-6 text-center">
+                  <Button 
+                    variant="outline" 
+                    onClick={() => navigate('/user-booking')}
+                    className="border-slate-200 hover:border-emerald-500 hover:text-emerald-700"
+                  >
                     View All {availableRooms.length} Available Rooms
+                    <ArrowRight className="h-4 w-4 ml-2" />
                   </Button>
                 </div>
               )}
@@ -223,55 +251,62 @@ const UserDashboard: React.FC = () => {
           </Card>
         )}
 
-        {/* Contact Information Section */}
-        <Card className="mt-8 bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200">
+        {/* Luxury Contact Information Section */}
+        <Card className="mt-8 bg-gradient-to-br from-amber-50 via-orange-50 to-amber-100 border-amber-200 shadow-luxury">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-blue-800">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+            <CardTitle className="flex items-center gap-2 text-xl font-serif text-slate-800">
+              <Phone className="h-5 w-5 text-amber-600" />
               Contact Us
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-3">
-                <h4 className="font-semibold text-blue-700">Phone Numbers</h4>
+                <h4 className="font-semibold text-slate-700 uppercase tracking-wide text-sm">Phone Numbers</h4>
                 <div className="space-y-2">
-                  <a href="tel:9851154647" className="flex items-center gap-2 text-blue-600 hover:text-blue-800 transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
-                    Mobile: 9851154647
+                  <a href="tel:9851154647" className="flex items-center gap-2 text-slate-600 hover:text-amber-700 transition-colors">
+                    <div className="p-1.5 bg-amber-100 rounded-lg">
+                      <Phone className="w-4 h-4 text-amber-600" />
+                    </div>
+                    <span className="font-medium">Mobile: 9851154647</span>
                   </a>
-                  <a href="tel:9847796612" className="flex items-center gap-2 text-blue-600 hover:text-blue-800 transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
-                    Mobile: 9847796612
+                  <a href="tel:9847796612" className="flex items-center gap-2 text-slate-600 hover:text-amber-700 transition-colors">
+                    <div className="p-1.5 bg-amber-100 rounded-lg">
+                      <Phone className="w-4 h-4 text-amber-600" />
+                    </div>
+                    <span className="font-medium">Mobile: 9847796612</span>
                   </a>
                 </div>
               </div>
               <div className="space-y-3">
-                <h4 className="font-semibold text-blue-700">Telephone</h4>
-                <a href="tel:01-5348383" className="flex items-center gap-2 text-blue-600 hover:text-blue-800 transition-colors">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
-                  Tel: 01-5348383
+                <h4 className="font-semibold text-slate-700 uppercase tracking-wide text-sm">Telephone</h4>
+                <a href="tel:01-5348383" className="flex items-center gap-2 text-slate-600 hover:text-amber-700 transition-colors">
+                  <div className="p-1.5 bg-amber-100 rounded-lg">
+                    <Phone className="w-4 h-4 text-amber-600" />
+                  </div>
+                  <span className="font-medium">Tel: 01-5348383</span>
                 </a>
               </div>
             </div>
-            <div className="pt-4 border-t border-blue-200">
+            <div className="pt-4 border-t border-amber-200">
               <a 
                 href="https://maps.app.goo.gl/9SA4FgaiwmAKneMZA" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 text-blue-600 hover:text-blue-800 transition-colors font-medium"
+                className="flex items-center gap-2 text-amber-700 hover:text-amber-800 transition-colors font-medium"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                <MapPin className="w-5 h-5" />
                 📍 View Location on Google Maps
               </a>
             </div>
           </CardContent>
         </Card>
 
-        {/* Footer with watermark */}
-        <footer className="mt-12 py-6 border-t border-border">
-          <div className="text-center text-sm">
-            <span className="text-foreground/90 font-medium">Created by Rahul GC © 2026</span>
+        {/* Luxury Footer */}
+        <footer className="mt-12 py-6 border-t border-slate-200">
+          <div className="text-center">
+            <span className="text-sm text-slate-500">New Chitwan Luxury Guest House</span>
+            <p className="text-xs text-slate-400 mt-1">Created by Rahul GC © 2026</p>
           </div>
         </footer>
       </div>

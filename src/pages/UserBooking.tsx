@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
 import type { Room } from '@/services/roomService';
-import { Calendar, MapPin, Users, Phone, Mail } from 'lucide-react';
+import { Calendar, MapPin, Users, Phone, Mail, Sparkles, ArrowLeft, BedDouble, CheckCircle2 } from 'lucide-react';
 
 const UserBooking: React.FC = () => {
   const [availableRooms, setAvailableRooms] = useState<Room[]>([]);
@@ -98,23 +98,33 @@ const UserBooking: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50/30 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading available rooms...</p>
+          <Sparkles className="h-8 w-8 text-amber-500 mx-auto mb-4 animate-spin" />
+          <p className="text-slate-600 font-medium">Loading available rooms...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background py-8">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50/30 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-foreground">Book Your Stay</h1>
-          <p className="text-muted-foreground mt-2">Choose from our available rooms and make a reservation</p>
+        {/* Luxury Header */}
+        <div className="mb-8 fade-up">
+          <Button 
+            variant="ghost" 
+            onClick={() => navigate('/user-dashboard')}
+            className="mb-4 text-slate-600 hover:text-slate-800"
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Back to Dashboard
+          </Button>
+          <h1 className="text-4xl font-bold text-slate-800 font-serif">Book Your Stay</h1>
+          <p className="text-slate-500 mt-2 text-lg">
+            Reserve your perfect room at our luxury guest house
+          </p>
         </div>
-
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Available Rooms */}
           <div className="lg:col-span-2">

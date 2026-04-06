@@ -1,109 +1,203 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useHotel } from '@/context/HotelContext';
-import { ROOMS } from '@/data/roomConfig';
-import { Card, CardContent } from '@/components/ui/card';
-import { Users, BedDouble, DoorOpen, CalendarCheck } from 'lucide-react';
+import { DashboardStats } from '@/components/StatCards';
+import { RoomStatusGrid } from '@/components/RoomStatusGrid';
+import { ActiveGuestsTable } from '@/components/ActiveGuestsTable';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { CalendarCheck, CalendarX, ArrowRight, Sparkles } from 'lucide-react';
+import { roomService } from '@/services/roomService';
+import { guestService } from '@/services/guestService';
+import type { Room } from '@/services/roomService';
+import type { Guest } from '@/services/guestService';
 
 const Dashboard: React.FC = () => {
-  const { activeBookings, todayCheckIns, todayCheckOuts, getRoomStatus } = useHotel();
+  const navigate = useNavigate();
+  const { activeBookings, todayCheckIns, todayCheckOuts } = useHotel();
+  const [rooms, setRooms] = useState<Room[]>([]);
+  const [guests, setGuests] = useState<Guest[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const availableCount = ROOMS.filter(r => getRoomStatus(r.number) === 'available').length;
-  const occupiedCount = ROOMS.filter(r => getRoomStatus(r.number) === 'occupied').length;
+  useEffect(() => {
+    loadData();
+  }, []);
 
-  const stats = [
-    { label: 'Current Guests', value: activeBookings.length, icon: Users, color: 'text-primary' },
-    { label: 'Available Rooms', value: availableCount, icon: BedDouble, color: 'text-success' },
-    { label: 'Occupied Rooms', value: occupiedCount, icon: DoorOpen, color: 'text-warning' },
-    { label: "Today's Check-ins", value: todayCheckIns.length, icon: CalendarCheck, color: 'text-secondary' },
-  ];
+  const loadData = async () => {
+    try {
+      const [roomsData, guestsData] = await Promise.all([
+        roomService.getAllRooms(),
+        guestService.getAllGuests(),
+      ]);
+      setRooms(roomsData);
+      setGuests(guestsData);
+    } catch (error) {
+      console.error('Error loading dashboard data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const stats = {
+    activeGuests: guests.filter(g => g.status === 'checked-in').length,
+    availableRooms: rooms.filter(r => r.status === 'available').length,
+    occupiedRooms: rooms.filter(r => r.status === 'occupied').length,
+    cleaningRooms: rooms.filter(r => r.status === 'cleaning').length,
+    reservedRooms: rooms.filter(r => r.status === 'reserved').length,
+  };
+
+  const handleRoomClick = (room: Room) => {
+    if (room.status === 'available') {
+      navigate(`/guest-entry?room=${room.room_number}`);
+    }
+  };
+
+  const handleCheckout = (guest: Guest) => {
+    navigate(`/checkout?guest=${guest.guest_id}`);
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="flex items-center gap-3 text-slate-500">
+          <Sparkles className="w-5 h-5 animate-spin" />
+          <span className="font-medium">Loading dashboard...</span>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="animate-fade-in">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
-        <p className="text-muted-foreground mt-1">Welcome to New Chitwan Guest House</p>
+    <div className="space-y-8">
+      {/* Header */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 fade-up">
+        <div>
+          <h1 className="text-4xl font-bold text-slate-800 font-serif">
+            Dashboard
+          </h1>
+          <p className="text-slate-500 mt-1 font-sans">
+            Welcome to New Chitwan Luxury Guest House
+          </p>
+        </div>
+        <div className="flex gap-3">
+          <Button 
+            onClick={() => navigate('/guest-entry')}
+            className="btn-gold"
+          >
+            <CalendarCheck className="w-4 h-4 mr-2" />
+            New Check-in
+          </Button>
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        {stats.map(stat => (
-          <Card key={stat.label} className="border-0 shadow-md hover:shadow-lg transition-shadow">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-muted-foreground">{stat.label}</p>
-                  <p className="text-3xl font-bold mt-1 text-foreground">{stat.value}</p>
+      {/* Stats Cards */}
+      <DashboardStats
+        activeGuests={stats.activeGuests}
+        availableRooms={stats.availableRooms}
+        occupiedRooms={stats.occupiedRooms}
+        todayRevenue={0}
+      />
+
+      {/* Room Status Grid */}
+      <RoomStatusGrid
+        rooms={rooms}
+        onRoomClick={handleRoomClick}
+      />
+
+      {/* Active Guests & Today's Activity */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Active Guests Table */}
+        <div className="lg:col-span-2">
+          <ActiveGuestsTable
+            guests={guests}
+            onCheckout={handleCheckout}
+            onViewDetails={(guest) => navigate(`/records?search=${guest.guest_id}`)}
+          />
+        </div>
+
+        {/* Today's Activity Sidebar */}
+        <div className="space-y-6">
+          {/* Quick Actions */}
+          <Card className="shadow-luxury border-0">
+            <CardHeader className="border-b border-slate-100 pb-3">
+              <CardTitle className="text-lg font-serif text-slate-800">
+                Quick Actions
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-4 space-y-3">
+              <Button 
+                variant="outline" 
+                className="w-full justify-between border-slate-200 hover:border-amber-500/50 hover:bg-amber-50"
+                onClick={() => navigate('/rooms')}
+              >
+                <span className="flex items-center gap-2">
+                  <CalendarCheck className="w-4 h-4 text-amber-600" />
+                  View All Rooms
+                </span>
+                <ArrowRight className="w-4 h-4 text-slate-400" />
+              </Button>
+              <Button 
+                variant="outline" 
+                className="w-full justify-between border-slate-200 hover:border-amber-500/50 hover:bg-amber-50"
+                onClick={() => navigate('/records')}
+              >
+                <span className="flex items-center gap-2">
+                  <CalendarX className="w-4 h-4 text-amber-600" />
+                  Guest Records
+                </span>
+                <ArrowRight className="w-4 h-4 text-slate-400" />
+              </Button>
+            </CardContent>
+          </Card>
+
+          {/* Room Summary */}
+          <Card className="shadow-luxury border-0">
+            <CardHeader className="border-b border-slate-100 pb-3">
+              <CardTitle className="text-lg font-serif text-slate-800">
+                Room Summary
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-4">
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-slate-600 flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                    Available
+                  </span>
+                  <span className="font-semibold text-slate-800">{stats.availableRooms}</span>
                 </div>
-                <div className="bg-muted p-3 rounded-xl">
-                  <stat.icon className={`h-6 w-6 ${stat.color}`} />
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-slate-600 flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-rose-500" />
+                    Occupied
+                  </span>
+                  <span className="font-semibold text-slate-800">{stats.occupiedRooms}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-slate-600 flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-amber-500" />
+                    Cleaning
+                  </span>
+                  <span className="font-semibold text-slate-800">{stats.cleaningRooms}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-slate-600 flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-blue-500" />
+                    Reserved
+                  </span>
+                  <span className="font-semibold text-slate-800">{stats.reservedRooms}</span>
+                </div>
+                <div className="pt-3 border-t border-slate-100">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium text-slate-700">Total Rooms</span>
+                    <span className="font-bold text-slate-800">{rooms.length}</span>
+                  </div>
                 </div>
               </div>
             </CardContent>
           </Card>
-        ))}
-      </div>
-
-      {/* Quick room overview */}
-      <Card className="border-0 shadow-md">
-        <CardContent className="p-6">
-          <h2 className="text-lg font-semibold mb-4 text-foreground">Room Overview</h2>
-          <div className="grid grid-cols-8 sm:grid-cols-12 gap-2">
-            {ROOMS.map(room => {
-              const status = getRoomStatus(room.number);
-              const bg = status === 'reserved'
-                ? 'bg-foreground/20 text-muted-foreground'
-                : status === 'occupied'
-                ? 'bg-primary text-primary-foreground'
-                : 'bg-success text-success-foreground';
-              return (
-                <div
-                  key={room.number}
-                  className={`${bg} rounded-lg p-2 text-center text-sm font-semibold`}
-                  title={`Room ${room.number} - ${status}`}
-                >
-                  {room.number}
-                </div>
-              );
-            })}
-          </div>
-          <div className="flex gap-6 mt-4 text-xs text-muted-foreground">
-            <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded bg-success inline-block" /> Available</span>
-            <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded bg-primary inline-block" /> Occupied</span>
-            <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded bg-foreground/20 inline-block" /> Reserved</span>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Today's activity */}
-      {(todayCheckIns.length > 0 || todayCheckOuts.length > 0) && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-          {todayCheckIns.length > 0 && (
-            <Card className="border-0 shadow-md">
-              <CardContent className="p-6">
-                <h3 className="font-semibold mb-3 text-foreground">Today's Check-ins</h3>
-                {todayCheckIns.map(b => (
-                  <div key={b.id} className="flex justify-between py-2 border-b border-border last:border-0">
-                    <span className="text-sm text-foreground">{b.guest.name}</span>
-                    <span className="text-sm text-muted-foreground">Room {b.roomNumber}</span>
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
-          )}
-          {todayCheckOuts.length > 0 && (
-            <Card className="border-0 shadow-md">
-              <CardContent className="p-6">
-                <h3 className="font-semibold mb-3 text-foreground">Today's Check-outs</h3>
-                {todayCheckOuts.map(b => (
-                  <div key={b.id} className="flex justify-between py-2 border-b border-border last:border-0">
-                    <span className="text-sm text-foreground">{b.guest.name}</span>
-                    <span className="text-sm text-muted-foreground">Room {b.roomNumber}</span>
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
-          )}
         </div>
-      )}
+      </div>
     </div>
   );
 };
