@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
-import { Mountain, User, Shield, Users, Mail, Lock, UserPlus } from 'lucide-react';
+import { Mountain, User, Shield, Users, Mail, Lock, UserPlus, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
@@ -86,16 +86,17 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-secondary p-4">
-      <Card className="w-full max-w-md animate-fade-in shadow-2xl border-0">
+    <div className="min-h-screen flex items-center justify-center bg-navy-gradient p-4">
+      <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC4wMyI+PHBhdGggZD0iTTM2IDM0aDR2NGgtNHpNMjAgMjBoNHY0aC00eiIvPjwvZz48L2c+PC9zdmc+')] opacity-50"></div>
+      <Card className="w-full max-w-md animate-fade-in shadow-2xl border-0 relative z-10 bg-white/95 backdrop-blur-sm">
         <CardHeader className="text-center pb-2 pt-8">
           <div className="flex justify-center mb-4">
-            <div className="bg-primary/10 p-4 rounded-full">
-              <Mountain className="h-12 w-12 text-primary" />
+            <div className="h-16 w-16 bg-gradient-to-br from-amber-400 to-amber-600 rounded-2xl flex items-center justify-center shadow-xl">
+              <Mountain className="h-10 w-10 text-white" />
             </div>
           </div>
-          <h1 className="text-2xl font-bold text-foreground">New Chitwan Guest House</h1>
-          <p className="text-muted-foreground text-sm mt-1">Management System</p>
+          <h1 className="text-3xl font-bold font-serif text-slate-800">New Chitwan</h1>
+          <p className="text-amber-600 text-sm mt-1 font-medium tracking-wide uppercase">Luxury Guest House</p>
         </CardHeader>
         <CardContent className="px-8 pb-8">
           <Tabs defaultValue="login" className="w-full">
